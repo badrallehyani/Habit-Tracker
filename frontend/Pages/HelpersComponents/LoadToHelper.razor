@@ -1,0 +1,10 @@
+@namespace BlazorApp.Components.Pages.HelpersComponents
+@inject NavigationManager NavigationManager
+
+
+@code{
+
+    public void LoadNavigationToHelper(Helper helper){
+        helper.NavigateToLogin = ()=>{NavigationManager.NavigateTo("login");};
+    }
+}

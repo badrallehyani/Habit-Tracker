@@ -1,0 +1,16 @@
+.habit-container {
+    height: calc(100%+10vh);
+    width: 100%;
+    margin: 0 auto;
+    max-width: 600px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+    font-size: 28px;
+    color: #333333;
+    margin: 0;
+}

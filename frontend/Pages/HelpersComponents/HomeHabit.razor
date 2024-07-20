@@ -1,0 +1,63 @@
+@namespace BlazorApp.Components.Pages.HelpersComponents
+
+@code {
+    [Parameter]
+    public HabitRecord habitRecord { get; set; }
+    [Parameter]
+    public int index { get; set; }
+    [Parameter]
+    public Action ParentStateHasChanged {get; set;}
+    [Parameter]
+    public Action<int, int> MarkDone {get; set;}
+}
+
+@code{
+    void showDescOnClick(){
+        habitRecord.ShowDesc = !habitRecord.ShowDesc;
+    }
+}
+
+@code{
+}
+
+@{
+    var doneButtonClass = "mark-done";
+    var doneButtonIsDisabled = false;
+
+    if (habitRecord.IsDone){
+        doneButtonClass = "mark-done-disabled";
+        doneButtonIsDisabled = true;
+    }
+
+
+    var showDescButtonClass = "show-description";
+    var showDescButtonIsDisabled = false;
+
+    if(habitRecord.Desc == ""){
+        showDescButtonClass = "show-description-disabled";
+        showDescButtonIsDisabled = true;
+    }
+}
+
+<div class="habit">
+    <div class="habit-info">
+        <span class="habit-name">@habitRecord.Name 🔥@habitRecord.Streak</span>
+        <button disabled=@showDescButtonIsDisabled @onclick="showDescOnClick" class=@showDescButtonClass>
+            Desc
+        </button>
+    </div>
+    <div>
+        @if (habitRecord.ShowDesc){
+            <p>@habitRecord.Desc</p>
+        }
+    </div>
+
+    <button @onclick="@(async ()=>{
+                        MarkDone(habitRecord.HabitID, index);
+                    })" 
+            disabled=@doneButtonIsDisabled 
+            class=@doneButtonClass>
+        Done
+    </button>
+
+</div>

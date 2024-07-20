@@ -1,0 +1,109 @@
+@page "/"
+<PageTitle>Today</PageTitle>
+    
+
+@using System.Text;
+@using System.Net.Http;
+@using Microsoft.Extensions.Configuration
+@using Newtonsoft.Json;
+
+@using BlazorApp.Components.Pages;
+@using BlazorApp.Components.Pages.HelpersComponents;
+
+@inject NavigationManager NavigationManager
+@inject IConfiguration Configuration
+@inject HttpClient Http
+@inject IJSRuntime JSRuntime
+
+<LoadToHelper @ref=loader/>
+@code {
+    HabitRecord[] habitsRecords;
+    Helper helper;
+    LoadToHelper loader;
+
+    protected override async Task OnAfterRenderAsync (bool firstRender){
+        if(firstRender){
+            helper = new Helper(Configuration["BackendURL"]);
+            loader.LoadNavigationToHelper(helper);
+
+            habitsRecords = await helper.GetTodayHabits();
+            StateHasChanged();
+        }
+    }
+}
+
+
+@code {
+    private bool showFinished = false;
+    private string showHideFinishedText = "Show Finished";
+    
+    void toggleShowFinished(){
+        showFinished = !showFinished;
+        if (showFinished){
+            showHideFinishedText = "Hide Finished";
+        }
+        else{
+            showHideFinishedText = "Show Finished";
+        }
+    }
+}
+
+@code{
+    async void MarkDone(int habitID, int habitRecordIndex){
+        string response = await helper.MarkDoneRequest(habitID);
+
+        if(response == "Ok"){
+            habitsRecords[habitRecordIndex].IsDone = true;
+            habitsRecords[habitRecordIndex].Streak += 1;
+            StateHasChanged();
+        }
+    }
+}
+
+<header class="header">
+    <div class="header-left">
+        <h1 class="title">Today</h1>
+    </div>
+    <div class="header-right">
+
+        <button @onclick="toggleShowFinished" id="show-finished-btn" class="show-finished">
+            @showHideFinishedText
+        </button>
+    </div>
+</header>
+
+<div class="habit-container">
+    @if (habitsRecords != null){
+        @for (int i = 0; i != habitsRecords.Length; i++){
+            var habitRecord = habitsRecords[i];
+            if(habitRecord.IsDone && !showFinished){
+                continue;
+            }
+            <HomeHabit 
+                habitRecord=habitRecord 
+                index=i
+
+                MarkDone=MarkDone
+                ParentStateHasChanged=StateHasChanged
+            />
+        }
+    }
+</div>
+
+
+@code{
+    async void GoTomorrow(){
+        await JSRuntime.InvokeVoidAsync("alert", "Taking You To The Future!");
+        string response = await helper.GoTomorrow();
+
+        if(response == "Ok"){
+            habitsRecords = await helper.GetTodayHabits();
+            StateHasChanged();
+        }
+    }
+}
+
+<div>
+    <button @onclick=GoTomorrow class="show-finished">Go Tomorrow!</button>
+</div> 
+

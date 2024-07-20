@@ -1,0 +1,71 @@
+/* Habit styles */
+.habit {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    gap: 10px; /* Spacing between habit items */
+    padding: 10px 15px;
+    background-color: #f0f0f0;
+    border-radius: 6px;
+}
+
+.habit-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.habit-name {
+    font-size: 18px; /* Font size for habit name */
+    color: #333333;
+    font-weight: bold;
+}
+
+.habit-description {
+    display: none; /* Hide description by default */
+    font-size: 14px; /* Font size for habit description */
+    color: #555;
+}
+
+.show-description {
+    padding: 6px 12px; /* Smaller padding for smaller button */
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 12px; /* Smaller font size */
+}
+.show-description:hover {
+    background-color: #0056b3;
+}
+.show-description-disabled{
+    padding: 6px 12px; /* Smaller padding for smaller button */
+    background-color: #151d15;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px; /* Smaller font size */
+}
+
+
+.mark-done {
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    /* cursor: pointer; */
+    transition: background-color 0.3s ease;
+}
+.mark-done:hover {
+    background-color: #45a049;
+}
+
+.mark-done-disabled{
+    padding: 8px 16px;
+    background-color: #151d15;
+    color: white;
+    border: none;
+    border-radius: 4px;
+}

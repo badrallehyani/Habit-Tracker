@@ -1,0 +1,87 @@
+﻿@page "/edit"
+
+@using BlazorApp.Components.Pages.HelpersComponents
+@using Microsoft.Extensions.Configuration
+
+@inject IConfiguration Configuration
+
+
+<LoadToHelper @ref=loader/>
+@code {
+    Habit[] habits;
+    Helper helper;
+    LoadToHelper loader;
+
+    protected override async Task OnAfterRenderAsync (bool firstRender){
+        if(firstRender){
+            helper = new Helper(Configuration["BackendURL"]);
+            loader.LoadNavigationToHelper(helper);
+            habits = await helper.GetHabits();
+            StateHasChanged();
+        }
+    }
+}
+
+@code{
+    async void RemoveHabit(int ID, int index){
+        string response = await helper.RemoveHabit(ID);
+        if(response == "Ok"){
+            habits[index].Visible = false;
+            StateHasChanged();
+        }
+    }
+
+    void MakeEditable(int index){
+        habits[index].Editable = true;
+    }
+    
+    async void SaveEdit(int index){
+        Habit curr = habits[index];
+
+        if(curr.Name == curr.Nameinput && curr.Desc == curr.DescInput){
+            curr.Editable = false;
+            return;
+        }
+
+        string response = await helper.EditHabit(curr.ID, curr.Nameinput, curr.DescInput);
+
+        if(response == "Ok"){
+            curr.Name = curr.Nameinput;
+            curr.Desc = curr.DescInput;
+
+            curr.Editable = false;
+            StateHasChanged();
+        }
+    }
+
+}
+
+<PageTitle>Edit</PageTitle>
+
+<header>
+    <h1 class="title">Edit</h1>
+</header>
+
+@if(habits != null){
+    <div class="habit-container">
+            @for(var i = 0; i != habits.Length; i++){
+                var habit = habits[i];
+                Console.WriteLine($"Habit Name: {habit.Name}");
+                Console.WriteLine($"Habit Desc: {habit.Desc}");
+                Console.WriteLine($"Habit Visible: {habit.Visible}");
+                if(!habit.Visible){
+                    continue;
+                }
+                <EditHabit 
+                    Habit=habit
+                    Index=i
+
+                    RemoveHabit=RemoveHabit
+                    SaveEdit=SaveEdit
+                    MakeEditable=MakeEditable
+                />
+            } 
+    </div>
+}else{
+    <p>Loading</p>
+}

@@ -1,0 +1,78 @@
+@page "/login"
+
+
+@using BlazorApp.Components.Pages.HelpersComponents;
+@using Microsoft.Extensions.Configuration
+
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+@inject IConfiguration Configuration
+
+@code {
+    Helper helper;
+
+    protected override void OnAfterRender (bool firstRender){
+        if(firstRender){
+            helper = new Helper(Configuration["BackendURL"]);
+        }
+    }
+}
+
+@code{
+
+    async void loginOnClick(){
+        if(String.IsNullOrWhiteSpace(userIDString) || String.IsNullOrWhiteSpace(password) ){
+            await JSRuntime.InvokeVoidAsync("alert", "Empty Fields");
+            return;
+        }
+        
+        int userID;
+        bool userIDIsParsed = int.TryParse(userIDString, out userID);
+        if(!userIDIsParsed){
+            await JSRuntime.InvokeVoidAsync("alert", "UserID must be a number");
+            return;
+        }
+
+        string response = await helper.Login(userID, password);
+
+        if(response != "Ok"){
+            await JSRuntime.InvokeVoidAsync("alert", response);
+            return;
+        }
+
+        NavigationManager.NavigateTo("/");
+    }
+}
+
+@code{
+    public string userIDString;
+    public string password;
+}
+
+
+
+<div class="login-container">
+  <div class="form-header">
+    <h2 class="login-title">Login</h2>
+  </div>
+  <div class="form-container">
+    <div class="form-group">
+      <input @bind="userIDString" type="text" placeholder="Enter your username">
+    </div>
+    <div class="form-group">
+      <input @bind="password" type="password" placeholder="Enter your password">
+    </div>
+    <div class="form-group">
+      <button @onclick="loginOnClick" class="login-btn">Login</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+
+function setCookie(cookie){
+  document.cookie = cookie;
+}
+
+</script>

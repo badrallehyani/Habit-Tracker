@@ -1,0 +1,55 @@
+@namespace BlazorApp.Components.Pages.HelpersComponents
+
+@code {
+    [Parameter]
+    public Habit Habit { get; set; }
+    [Parameter]
+    public int Index { get; set; }
+    [Parameter]
+    public Action<int> MakeEditable { get; set; }
+    [Parameter]
+    public Action<int, int> RemoveHabit { get; set; }
+    [Parameter]
+    public Action<int> SaveEdit { get; set; }
+}
+
+
+<div class="habit">
+    @if (Habit.Editable){
+        <input class="habit-title" @bind="Habit.Nameinput">
+        <br>
+        <textarea rows="3" class="habit-description" @bind="Habit.DescInput" />
+    }
+    else{
+        <div class="habit-title">@Habit.Name</div>
+        <div class="habit-description">@Habit.Desc</div>
+    }
+
+    <div class="habit-actions">
+
+
+        @if (Habit.Editable){
+            <button class="save-btn" @onclick="@(()=>{
+                                    SaveEdit(Index);
+                                })">
+                Save
+            </button>
+        }
+
+        else{
+            <button class="edit-btn" @onclick="@(()=>{
+                                    MakeEditable(Index);
+                                })">
+                Edit
+            </button>
+        }
+
+
+        <button class="delete-btn" @onclick="@(()=>{
+                                RemoveHabit(Habit.ID, Index);
+                            })">
+            Delete
+        </button>
+
+    </div>
+</div>

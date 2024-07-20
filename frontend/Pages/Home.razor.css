@@ -1,0 +1,50 @@
+
+
+/* Header styles */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header-left {
+    flex: 1; /* Take up remaining space */
+}
+
+.header-right {
+    margin-left: auto; /* Push to the right */
+}
+
+.title {
+    font-size: 28px; /* Larger font size for title */
+    color: #333333;
+    margin: 0; /* Remove default margin */
+}
+
+.show-finished {
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.show-finished:hover {
+    background-color: #45a049;
+}
+
+/* Habit container styles */
+.habit-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}

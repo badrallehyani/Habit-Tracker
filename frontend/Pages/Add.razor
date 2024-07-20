@@ -1,0 +1,55 @@
+
+@page "/add"
+@using BlazorApp.Components.Pages.HelpersComponents;
+@using Microsoft.Extensions.Configuration
+
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+@inject IConfiguration Configuration
+
+<PageTitle>Add</PageTitle>
+
+<LoadToHelper @ref=loader/>
+@code {
+    Helper helper;
+    LoadToHelper loader;
+
+    protected override void OnAfterRender(bool firstRender){
+        if(firstRender){
+            helper = new Helper(Configuration["BackendURL"]);
+            loader.LoadNavigationToHelper(helper);
+        }
+    }
+}
+
+@code{
+    string habitName;
+    string habitDesc;
+    async void AddHabitOnClick(){
+        string response = await AddHabit(habitName, habitDesc);
+        if(response != "Ok"){
+            await JSRuntime.InvokeVoidAsync("alert", $"Error: {response}");    
+            return;
+        }
+        await JSRuntime.InvokeVoidAsync("alert", $"Added {habitName}");
+    }
+    
+    async Task<string> AddHabit(string habitName, string habitDesc, int userID = 1){
+        if(String.IsNullOrWhiteSpace(habitName)){
+            return "Empty Habit Name";
+        }
+        string response = await helper.AddHabit(habitName, habitDesc, userID);
+        return response;
+  }
+}
+
+<header>
+  <h1 class="title">Add</h1>
+</header>
+<div class="container">
+  <div class="inputs">
+    <input @bind="habitName" type="text" placeholder="Name">
+    <textarea @bind="habitDesc" placeholder="Description (optional)" rows="3"></textarea>
+  </div>
+  <button @onclick="AddHabitOnClick">Add</button>
+</div>
