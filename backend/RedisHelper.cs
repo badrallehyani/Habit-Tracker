@@ -319,10 +319,26 @@ class RedisHelper{
             return "Error: Invalid Password";
         }
 
-        string newToken = System.Guid.NewGuid().ToString();
-        string tokenRecordName = RecordNameCreator.Token(userID);
-        await this._database.StringSetAsync(tokenRecordName, newToken);
+        // this code only creates a token if there's none. otherwise it returns the existing token
 
-        return newToken;
+        string tokenRecordName = RecordNameCreator.Token(userID);
+        string token = await this._database.StringGetAsync(tokenRecordName);
+
+        if(token == null){
+            Console.WriteLine("Token Was Null");
+            token = System.Guid.NewGuid().ToString();
+            await this._database.StringSetAsync(tokenRecordName, token);
+        }
+        Console.WriteLine($"New Token: {token}");
+
+        return token;
+
+        // this code generates a new token on every new login
+
+        // string newToken = System.Guid.NewGuid().ToString();
+        // string tokenRecordName = RecordNameCreator.Token(userID);
+        // await this._database.StringSetAsync(tokenRecordName, newToken);
+
+        // return newToken;
     }
 }
