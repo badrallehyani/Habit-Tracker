@@ -39,9 +39,15 @@ public class AuthHandler{
             await context.Response.WriteAsync("Missing 'UserID' or 'Token' in Cookies");
             return;
         }
-
-        int userID = int.Parse(userIDString);
+        bool isParsed = int.TryParse(userIDString, out int userID);
         
+        if(!isParsed){
+            context.Response.StatusCode = 401;
+            Console.WriteLine("UserID Must Be An Integer");
+            await context.Response.WriteAsync("UserID Must Be An Integer");
+            return;
+        }
+
         bool tokenIsOk = await this.IsValidToken(userID, token);
         if(!tokenIsOk){
             context.Response.StatusCode = 401;
@@ -61,10 +67,6 @@ public class AuthHandler{
         string recordName = RecordNameCreator.Token(userID);
         string CorrectToken = await this._database.StringGetAsync(recordName);
         
-        if(CorrectToken == null){
-            return false;
-        }
-
         if(CorrectToken == null){
             return false;
         }
